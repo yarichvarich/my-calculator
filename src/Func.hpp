@@ -4,15 +4,16 @@
 #include <iostream>
 #include <unordered_map>
 #include <string>
+#include <vector>
+#include <iterator>
+#include <cmath>
+#include <iomanip>
+#include <algorithm>
+#include <fstream>
+#include <sstream>
+#include <type_traits>
 
-class Func {
-    std::string name;
-
-    std::string expression;
-
-    std::unordered_map<char, double> param;
-
-    int c_pos = 0;
+struct Func {
 
     bool correctness = true;
 
@@ -26,17 +27,21 @@ class Func {
 
     double factorial(double result);
 
-public:
+    int c_pos = 0;
+
+    std::string name;
+
+    std::string expression;
+
+    std::unordered_map<char, double> param;
 
     Func();
 
-    Func(const std::string &name);
+    Func(std::string name);
 
-    Func(const std::string &name,
-         std::string &param,
-         const std::string &expression = "");
-    
-    void set_expression(const std::string& expression);
+    Func(std::string name,
+         std::string param,
+         std::string expression = "");
 
     void print();
 
@@ -86,5 +91,30 @@ public:
             return 0;
         };
 };
+
+
+
+void set_prototype(std::string name, Func f);
+
+void set_variable(std::string name, double val);
+
+void handle_variable();
+
+void handle_prototype();
+
+bool is_prototype();
+
+bool is_variable();
+
+template<typename STRM>
+void handle_key_word(std::string key_word, STRM &stream);
+
+template<typename STRM>
+void read_buff(STRM &stream);
+
+template<typename STRM>
+void repeat_handle(STRM& stream);
+
+void setup_reserved();
 
 #endif

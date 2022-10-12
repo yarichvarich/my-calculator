@@ -1,8 +1,10 @@
-#include "Func.hpp"
+#include <Func.hpp>
 
 std::unordered_map<std::string, Func> prototypes;
 
 std::unordered_map<std::string, double> variables;
+
+const double M_PI = 3.14159265358979323846;
 
 Func::Func() {
 
@@ -10,15 +12,15 @@ Func::Func() {
 
 }
 
-Func::Func(const std::string &name) {
+Func::Func(std::string name) {
 
     this->name += name;
 
 }
 
-Func::Func(const std::string &name,
-           std::string &param,
-           const std::string &expression = "") {
+Func::Func(std::string name,
+           std::string param,
+           std::string expression) {
 
     this->name += name;
     
@@ -34,6 +36,18 @@ Func::Func(const std::string &name,
     }
 
     this->expression = expression;
+
+}
+
+void set_prototype(std::string name, Func f) {
+
+    prototypes[name] = f;
+
+}
+
+void set_variable(std::string name, double val) {
+
+variables[name] = val;
 
 }
 
@@ -344,9 +358,129 @@ double Func::factorial(double result) {
     return result;
 }
 
-void Func::set_expression(const std::string& expression) {
+void setup_reserved() {
+	Func m_sin("sin", "x"), m_cos("cos", "x"), m_tg("tg", "x", "sin(x)/cos(x);"), m_ctg("ctg", "x", "1/tg(x);"), m_log("log", "x,y"),
+		 m_asin("asin", "x"), m_acos("acos", "x"), m_atg("atg", "x"), m_actg("actg", "x", "pi/2 - atg(x);"), m_sh("sh", "x", "(e^x-e^(-x))/2;"),
+		 m_ch("ch", "x", "(e^x+e^(-x))/2;");
 
-    this->expression.clear();
+	m_sin.calculate = [](std::vector<double>& par, Func* obj) -> double {
 
-    this->expression += expression;
+		int c = 0;
+
+		if (par.size() == 0)
+
+			return sin(0);
+
+		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
+
+			(*i).second = par[c];
+
+		double result = sin(obj->param['x']);
+
+		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
+
+			(*i).second = 0;
+
+		obj->c_pos = 0;
+
+		return result;
+	};
+
+	m_cos.calculate = [](std::vector<double>& par, Func* obj) -> double {
+
+		int c = 0;
+
+		if (par.size() == 0)
+
+			return 0;
+
+		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
+
+			(*i).second = par[c];
+
+		double result = cos(obj->param['x']);
+
+		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
+
+			(*i).second = 0;
+
+		obj->c_pos = 0;
+
+		return result;
+	};
+
+	m_asin.calculate = [](std::vector<double>& par, Func* obj) -> double {
+		int c = 0;
+
+		if (par.size() == 0)
+			return sin(0);
+
+		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
+			(*i).second = par[c];
+		double result = asin(obj->param['x']);
+		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
+			(*i).second = 0;
+		obj->c_pos = 0;
+		return result;
+	};
+
+	m_acos.calculate = [](std::vector<double>& par, Func* obj) -> double {
+		int c = 0;
+
+		if (par.size() == 0)
+			return sin(0);
+
+		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
+			(*i).second = par[c];
+		double result = acos(obj->param['x']);
+		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
+			(*i).second = 0;
+		obj->c_pos = 0;
+		return result;
+	};
+
+	m_atg.calculate = [](std::vector<double>& par, Func* obj) -> double {
+		int c = 0;
+
+		if (par.size() == 0)
+			return sin(0);
+
+		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
+			(*i).second = par[c];
+		double result = atan(obj->param['x']);
+		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
+			(*i).second = 0;
+		obj->c_pos = 0;
+		return result;
+	};
+
+	m_log.calculate = [](std::vector<double>& par, Func* obj) -> double {
+		int c = 0;
+
+		if (par.size() == 0)
+			return 0;
+
+		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
+			(*i).second = par[c];
+		double result = log(obj->param['x']) / log(obj->param['y']);
+		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
+			(*i).second = 0;
+		obj->c_pos = 0;
+		return result;
+	};
+
+	prototypes[m_sin.name] = m_sin;
+	prototypes[m_cos.name] = m_cos;
+	prototypes[m_log.name] = m_log;
+	prototypes[m_tg.name] = m_tg;
+	prototypes[m_ctg.name] = m_ctg;
+	prototypes[m_asin.name] = m_asin;
+	prototypes[m_acos.name] = m_acos;
+	prototypes[m_atg.name] = m_atg;
+	prototypes[m_actg.name] = m_actg;
+	prototypes[m_sh.name] = m_sh;
+	prototypes[m_ch.name] = m_ch;
+	variables["pi"] = M_PI;
+	variables["e"] = exp(1);
+	variables["iterator"] = 0;
 }
