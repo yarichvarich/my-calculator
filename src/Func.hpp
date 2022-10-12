@@ -13,7 +13,7 @@
 #include <sstream>
 #include <type_traits>
 
-struct Func {
+class Func {
 
     bool correctness = true;
 
@@ -35,6 +35,8 @@ struct Func {
 
     std::unordered_map<char, double> param;
 
+public:
+
     Func();
 
     Func(std::string name);
@@ -44,6 +46,8 @@ struct Func {
          std::string expression = "");
 
     void print();
+
+    Func& set_expression(std::string expression);
 
     double (*calculate)(std::vector<double> &par,
                         Func* obj)
@@ -90,31 +94,40 @@ struct Func {
             
             return 0;
         };
+
+    friend void set_prototype(std::string name, Func f);
+
+    friend void set_variable(std::string name, double val);
+
+    friend void handle_variable();
+
+    friend void handle_prototype();
+
+    friend bool is_prototype();
+
+    friend bool is_variable();
+
+    template<typename STRM>
+    friend void handle_key_word(std::string key_word, STRM &stream);
+
+    template<typename STRM>
+    friend void read_buff(STRM &stream);
+
+    template<typename STRM>
+    friend void repeat_handle(STRM& stream);
+
+    friend void setup_reserved();
+
 };
 
+extern std::string help;
 
+extern std::unordered_map<std::string, Func> prototypes;
 
-void set_prototype(std::string name, Func f);
+extern std::unordered_map<std::string, double> variables;
 
-void set_variable(std::string name, double val);
+extern std::vector<std::string> key_words;
 
-void handle_variable();
-
-void handle_prototype();
-
-bool is_prototype();
-
-bool is_variable();
-
-template<typename STRM>
-void handle_key_word(std::string key_word, STRM &stream);
-
-template<typename STRM>
-void read_buff(STRM &stream);
-
-template<typename STRM>
-void repeat_handle(STRM& stream);
-
-void setup_reserved();
+extern std::string BUFF;
 
 #endif

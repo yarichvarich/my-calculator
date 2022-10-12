@@ -39,6 +39,11 @@ Func::Func(std::string name,
 
 }
 
+Func& Func::set_expression(std::string expression) {
+	this->expression = expression;
+	return *this;
+}
+
 void set_prototype(std::string name, Func f) {
 
     prototypes[name] = f;
@@ -417,14 +422,19 @@ void setup_reserved() {
 
 		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
 			(*i).second = par[c];
+
 		double result = asin(obj->param['x']);
+
 		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
 			(*i).second = 0;
+
 		obj->c_pos = 0;
+
 		return result;
 	};
 
 	m_acos.calculate = [](std::vector<double>& par, Func* obj) -> double {
+
 		int c = 0;
 
 		if (par.size() == 0)
@@ -432,14 +442,19 @@ void setup_reserved() {
 
 		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
 			(*i).second = par[c];
+
 		double result = acos(obj->param['x']);
+
 		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
 			(*i).second = 0;
+
 		obj->c_pos = 0;
+
 		return result;
 	};
 
 	m_atg.calculate = [](std::vector<double>& par, Func* obj) -> double {
+
 		int c = 0;
 
 		if (par.size() == 0)
@@ -447,14 +462,19 @@ void setup_reserved() {
 
 		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
 			(*i).second = par[c];
+
 		double result = atan(obj->param['x']);
+
 		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
 			(*i).second = 0;
+
 		obj->c_pos = 0;
+
 		return result;
 	};
 
 	m_log.calculate = [](std::vector<double>& par, Func* obj) -> double {
+
 		int c = 0;
 
 		if (par.size() == 0)
@@ -462,10 +482,14 @@ void setup_reserved() {
 
 		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
 			(*i).second = par[c];
+
 		double result = log(obj->param['x']) / log(obj->param['y']);
+
 		for (std::unordered_map<char, double>::iterator i = obj->param.begin(); i != obj->param.end(); i++, c++)
 			(*i).second = 0;
+
 		obj->c_pos = 0;
+
 		return result;
 	};
 
@@ -484,3 +508,64 @@ void setup_reserved() {
 	variables["e"] = exp(1);
 	variables["iterator"] = 0;
 }
+
+std::string help = "  <: Help menu:\n"
+"		- syntax:\n" 
+"			- declare a variable by using following syntax :\n"
+"				[name of variable] = expression;\n"
+"\n"
+"				the name of the varibale is declared strictly by characters A - Z, a - z\n"
+"				in the end of a declaration put \';\' \n"
+"\n"
+"				example:	 x = 10;       // correct\n"
+"						 var = 10;     // correct\n"
+"						 exp = f(var); // correct\n"
+"						 var1 = 190;   // incorrect name\n"
+"						 var = 10      // incorrect: no \';\'\n"
+"\n"
+"			 - declare function by using following syntax :\n"
+"				 [name of function] ([param1], [param2], ..., [paramN]) = [use parameters to define expression];\n"
+"\n"
+"				 the name of the function is declared strictly by characters A - Z, a - z\n"
+"				 in the end of a declaration put \';\'\n"
+"\n"
+"				 parameters(params) of the function is declared strictly by only one character A - Z, a - z\n"
+"\n"
+"				 example : f(x, y, z) = x ^ 2 + y ^ 2 + z!;            // correct\n"
+"					   f(var, dar, par) = var + (dar + par) / var; // incorrect parameters\n"
+"				           func(x) = sin(x) + 12;                      // correct\n"
+"\n"
+"				 note: if there is a varible declared before and it`s name and the name of the parameter are similar, the program\n"
+"				 will use the value of the variable not the parameter`s\n"
+"\n"
+"			 - calculate, then print the value by following syntax :\n"
+"				 [expression];\n"
+"\n"
+"				 the expression may contain declared function, variables, numbers(with floating point)\n"
+"\n"
+"				 example: 10.5 ^ (45 / 2 + 1)!;         // correct\n"
+"				 (x + y) / (z + func(f(x + 1, y - 1))); // correct if x, y, z are varibles, and\n"
+"									// func() is a function of a one parameter\n"
+"									// f() is a function of two parameters\n"
+"			 - Key words :\n"
+"				 -quit\n"
+"				 -help\n"
+"				 -import [path]\n"
+"				 -repeat[number of iterations]\n"
+"				 -end\n"
+"\n"
+"			 - import use example:\n"
+"				 -import calculation.txt\n"
+"				 note: no \';\' needed\n"
+"\n"
+"			 - repeat use example:\n"
+"				 -repeat 5\n"
+"				 -repeat 10\n"
+"				 x = x + 1;\n"
+"				 g(x);\n"
+"				 -end\n"
+"				 -repeat 2\n"
+"				 g(x - 1);\n"
+"				 -end\n"
+"				 -end\n"
+"				 note : alway close the cycle with the \"-end\" keyword\n";

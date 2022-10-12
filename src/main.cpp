@@ -1,6 +1,7 @@
 #include <Func.hpp>
 
 std::vector<std::string> key_words = {"-import", "-help", "-repeat"};
+
 std::string BUFF;
 
 int main(int argc, char *argv[]) {
@@ -39,7 +40,7 @@ int main(int argc, char *argv[]) {
 
 			Func BUFF_func{"BUFF_func"};
 
-			BUFF_func.expression = BUFF;
+			BUFF_func.set_expression(BUFF);
 
 			std::vector<double> e;
 
@@ -138,7 +139,7 @@ void handle_key_word(std::string key_word, STRM &stream) {
 
 	if (key_word == "-help") {
 
-		std::cout << "";
+		std::cout << help;
 
 	}
 
